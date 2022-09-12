@@ -31,5 +31,4 @@ def draw_polygon(win:pygame.Surface,
         else:
             next_vert_pos = Vector2(polygon_to_draw.vertices[i + 1].x, polygon_to_draw.vertices[i + 1].y)
        
-
         pygame.draw.line(win, color, start_pos=current_vert_pos, end_pos=next_vert_pos, width=width)
