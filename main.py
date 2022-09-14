@@ -5,7 +5,8 @@ from line import Line2D
 from point import Point2D
 from polygon import Polygon2D
 from typing import List
-from convex_hull import compute_convex_hull_2d
+from convex_hull import compute_convex_hull_2d_gw
+import time
 
 WIDTH = 900
 HEIGHT = 500
@@ -28,16 +29,18 @@ RAND_GEN_BUFFER = 50
 
 def generate_random_points() -> List[Point2D]:
     points_to_generate = []
-    for i in range(10):
+    for i in range(10000):
         points_to_generate.append(
             Point2D(random.randint(RAND_GEN_BUFFER, WIDTH - RAND_GEN_BUFFER), 
             random.randint(RAND_GEN_BUFFER, HEIGHT - RAND_GEN_BUFFER))
             )
     
     return points_to_generate
-
+start = time.time()
 points_to_generate = generate_random_points()
-convex_hull = compute_convex_hull_2d(points_to_generate)
+convex_hull = compute_convex_hull_2d_gw(points_to_generate)
+print(f"processing time for convex hull: {time.time() - start}")
+
 def update():
     WIN.fill(DARK)
     #graphic_layer_pygame.draw_point(WIN, point_to_draw=point_to_draw, size=5)

@@ -3,7 +3,16 @@ from polygon import Polygon2D
 import numpy as np
 from typing import List
 
-def compute_convex_hull_2d(points: List[Point2D]) -> Polygon2D:
+
+def compute_convex_hull_2d_gw(points: List[Point2D]) -> Polygon2D:
+    """Gift wrapping convex hull algorithm 
+
+    Args:
+        points (List[Point2D]): List of points to generate convex hull
+
+    Returns:
+        Polygon2D: the convex hull as a polygon object
+    """
     #Convex hull "candidate" vertex, used to construct a convex hull polygon 2d
     convex_hull_candidate = Polygon2D([])
     #Find the most left point
@@ -13,33 +22,28 @@ def compute_convex_hull_2d(points: List[Point2D]) -> Polygon2D:
             left_most_point = v
     #current vertex that's finding the next closest vertex
     current_point = left_most_point
-    
-    next_point_selected = points[1]
-
+    current_next = points[0]
+    if(left_most_point == points[0]):
+        current_next = points[1]
     convex_hull_candidate.add_vert(current_point)
-    should_add = False
     
-    index = 2
-    while(index < len(points)):
-        vectorCurrent = np.array([current_point.x, current_point.y]) - np.array([points[0].x, points[0].y])
-        should_add = False
-        for j in range(2, len(points)):
-            if j + 1 >= len(points):
-                break
-            vectorChecking = np.array([current_point.x, current_point.y]) - np.array([points[j].x, points[j].y])
-            
-            if(np.cross(vectorCurrent, vectorChecking) < 0 and points[j] not in convex_hull_candidate.vertices):
-                next_point_selected = points[j]
-                vectorCurrent = vectorChecking
-                should_add = True
+    index = 0
+    while(index < len(points)):        
+        for j in range(len(points)):          
+            vectorCurrent = np.array([current_next.x, current_next.y]) - np.array([current_point.x, current_point.y])
+            vectorChecking = np.array([points[j].x, points[j].y]) - np.array([current_point.x, current_point.y]) 
+            if(vectorChecking[0] == vectorCurrent[0] and vectorChecking[1] == vectorCurrent[1]):
+                continue
+            if(np.cross(vectorCurrent, vectorChecking) < 0):
+                current_next = points[j]
 
-        #vectorCurrent = np.array([next_point_selected.x, next_point_selected.y]) - np.array([points[0].x, points[0].y])
-        current_point = next_point_selected
-
-        if(should_add):
-            convex_hull_candidate.add_vert(current_point)
+        current_point = current_next
+        convex_hull_candidate.add_vert(current_point)
+        if(current_next == left_most_point and index > 1):
+            break
         index += 1
-    print(convex_hull_candidate)
+        if(index < len(points)):
+            current_next = points[index]
     return convex_hull_candidate
 
     
